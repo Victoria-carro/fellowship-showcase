@@ -1,10 +1,562 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Fellowship Showcase</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fellowship 2025 — Project Highlights</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0f1f3d;
+      --indigo: #2d4a8a;
+      --sky: #4a90d9;
+      --mint: #3cb88a;
+      --cream: #f8f6f1;
+      --white: #ffffff;
+      --gray-light: #f0eee9;
+      --gray-mid: #9a9890;
+      --gray-dark: #3a3835;
+      --accent: #e8a020;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--gray-dark);
+      line-height: 1.7;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--navy);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      color: var(--white);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    /* HERO */
+    .hero {
+      background: var(--navy);
+      color: var(--white);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero-label {
+      display: inline-block;
+      background: rgba(74,144,217,0.25);
+      color: var(--sky);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      line-height: 1.2;
+      max-width: 760px;
+      margin: 0 auto 1.25rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.72);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      padding-top: 2.5rem;
+      margin-top: 1rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      display: block;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* SECTION */
+    section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--indigo);
+      margin-bottom: 0.5rem;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--navy);
+    }
+
+    /* FELLOW CARDS */
+    .fellows-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .fellow-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .fellow-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(15,31,61,0.12);
+    }
+    .card-accent-bar {
+      height: 5px;
+      width: 100%;
+    }
+    .card-body { padding: 1.5rem; }
+    .fellow-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+    .fellow-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .fellow-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .fellow-role {
+      font-size: 12px;
+      color: var(--gray-mid);
+    }
+    .project-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--indigo);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-body p {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--indigo);
+      transition: gap 0.2s;
+    }
+    .card-link:hover { gap: 9px; }
+    .card-link::after { content: "→"; }
+
+    /* HIGHLIGHTS SECTION */
+    .highlights-bg { background: var(--navy); }
+    .highlights-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+    }
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .highlight-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .highlight-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.75rem;
+    }
+    .highlight-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.4rem;
+    }
+    .highlight-card p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.6;
+    }
+
+    /* ABOUT SECTION */
+    .about-flex {
+      display: flex;
+      gap: 4rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .about-text { flex: 1; min-width: 280px; }
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+    .about-text p { color: #555; margin-bottom: 1rem; }
+    .about-quote {
+      flex: 0 0 300px;
+      background: var(--indigo);
+      color: var(--white);
+      padding: 2rem;
+      border-radius: 16px;
+    }
+    .about-quote blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .about-quote cite {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      font-style: normal;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--gray-dark);
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      padding: 2rem;
+      font-size: 13px;
+    }
+    footer a { color: var(--sky); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .hero-stats { gap: 1.5rem; }
+      .about-quote { flex: 0 0 100%; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to the Fellowship Showcase</h1>
-    <p>This website presents the projects of our fellows.</p>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">🎓 Fellowship 2025</a>
+  <ul class="nav-links">
+    <li><a href="#fellows">Fellows</a></li>
+    <li><a href="#highlights">Highlights</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-label">Cohort 2025</div>
+  <h1>Projects that are <em>changing</em> the game</h1>
+  <p class="hero-sub">
+    Meet the 5 fellows of this edition: researchers, innovators, and leaders
+    working on the most pressing challenges of our time.
+  </p>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num">5</span>
+      <span class="stat-label">Selected fellows</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">12</span>
+      <span class="stat-label">Program months</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">3</span>
+      <span class="stat-label">Countries represented</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">5</span>
+      <span class="stat-label">Active projects</span>
+    </div>
+  </div>
+</header>
+
+<!-- FELLOWS -->
+<section id="fellows">
+  <div class="section-header">
+    <p class="section-eyebrow">The cohort</p>
+    <h2>Meet the Fellows</h2>
+  </div>
+
+  <div class="fellows-grid">
+
+    <!-- Fellow 1 -->
+    <div class="fellow-card">
+      <div class="card-accent-bar" style="background: #2d4a8a;"></div>
+      <div class="card-body">
+        <div class="fellow-header">
+          <div class="fellow-avatar" style="background:#e8f0fc; color:#2d4a8a;">MG</div>
+          <div>
+            <div class="fellow-name">María García</div>
+            <div class="fellow-role">University of Buenos Aires</div>
+          </div>
+        </div>
+        <div class="project-title">Project</div>
+        <p>
+          Develops machine learning models to detect school dropout patterns
+          in rural Latin American communities, with the goal of intervening early
+          and keeping students in the education system.
+        </p>
+        <div class="card-tags">
+          <span class="tag" style="background:#e8f0fc; color:#2d4a8a;">Education</span>
+          <span class="tag" style="background:#e8f0fc; color:#2d4a8a;">Machine Learning</span>
+          <span class="tag" style="background:#e8f0fc; color:#2d4a8a;">Social Impact</span>
+        </div>
+        <a class="card-link" href="#">View project</a>
+      </div>
+    </div>
+
+    <!-- Fellow 2 -->
+    <div class="fellow-card">
+      <div class="card-accent-bar" style="background: #3cb88a;"></div>
+      <div class="card-body">
+        <div class="fellow-header">
+          <div class="fellow-avatar" style="background:#e2f7f0; color:#1a7a5e;">AR</div>
+          <div>
+            <div class="fellow-name">Andrés Ramírez</div>
+            <div class="fellow-role">ITAM, Mexico City</div>
+          </div>
+        </div>
+        <div class="project-title">Project</div>
+        <p>
+          Designs low-cost IoT sensor-based climate monitoring systems for
+          vulnerable coastal communities, generating early warnings for
+          extreme weather events.
+        </p>
+        <div class="card-tags">
+          <span class="tag" style="background:#e2f7f0; color:#1a7a5e;">Climate</span>
+          <span class="tag" style="background:#e2f7f0; color:#1a7a5e;">IoT</span>
+          <span class="tag" style="background:#e2f7f0; color:#1a7a5e;">Resilience</span>
+        </div>
+        <a class="card-link" href="#">View project</a>
+      </div>
+    </div>
+
+    <!-- Fellow 3 -->
+    <div class="fellow-card">
+      <div class="card-accent-bar" style="background: #e8a020;"></div>
+      <div class="card-body">
+        <div class="fellow-header">
+          <div class="fellow-avatar" style="background:#fdf0d9; color:#a06010;">LS</div>
+          <div>
+            <div class="fellow-name">Laura Suárez</div>
+            <div class="fellow-role">PUC Chile</div>
+          </div>
+        </div>
+        <div class="project-title">Project</div>
+        <p>
+          Builds a telemedicine platform with conversational AI for primary
+          diagnosis in areas without access to specialists, connecting rural
+          patients with the formal healthcare system.
+        </p>
+        <div class="card-tags">
+          <span class="tag" style="background:#fdf0d9; color:#a06010;">Health</span>
+          <span class="tag" style="background:#fdf0d9; color:#a06010;">AI</span>
+          <span class="tag" style="background:#fdf0d9; color:#a06010;">Access</span>
+        </div>
+        <a class="card-link" href="#">View project</a>
+      </div>
+    </div>
+
+    <!-- Fellow 4 -->
+    <div class="fellow-card">
+      <div class="card-accent-bar" style="background: #c0392b;"></div>
+      <div class="card-body">
+        <div class="fellow-header">
+          <div class="fellow-avatar" style="background:#fdecea; color:#922b21;">PT</div>
+          <div>
+            <div class="fellow-name">Pedro Torres</div>
+            <div class="fellow-role">Universidad de los Andes</div>
+          </div>
+        </div>
+        <div class="project-title">Project</div>
+        <p>
+          Investigates transparency and accountability mechanisms in public
+          contracts using data analysis and visualization for journalists and
+          citizens interested in fighting corruption.
+        </p>
+        <div class="card-tags">
+          <span class="tag" style="background:#fdecea; color:#922b21;">Open Government</span>
+          <span class="tag" style="background:#fdecea; color:#922b21;">Data</span>
+          <span class="tag" style="background:#fdecea; color:#922b21;">Transparency</span>
+        </div>
+        <a class="card-link" href="#">View project</a>
+      </div>
+    </div>
+
+    <!-- Fellow 5 -->
+    <div class="fellow-card">
+      <div class="card-accent-bar" style="background: #7d3c98;"></div>
+      <div class="card-body">
+        <div class="fellow-header">
+          <div class="fellow-avatar" style="background:#f5eafb; color:#6c3483;">VM</div>
+          <div>
+            <div class="fellow-name">Valentina Mora</div>
+            <div class="fellow-role">National University</div>
+          </div>
+        </div>
+        <div class="project-title">Project</div>
+        <p>
+          Develops NLP tools for indigenous languages to preserve and digitize
+          the oral cultural heritage of communities at risk of losing their
+          language across future generations.
+        </p>
+        <div class="card-tags">
+          <span class="tag" style="background:#f5eafb; color:#6c3483;">NLP</span>
+          <span class="tag" style="background:#f5eafb; color:#6c3483;">Culture</span>
+          <span class="tag" style="background:#f5eafb; color:#6c3483;">Indigenous Languages</span>
+        </div>
+        <a class="card-link" href="#">View project</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- HIGHLIGHTS -->
+<div class="highlights-bg" id="highlights">
+  <div class="highlights-inner">
+    <div class="section-header">
+      <p class="section-eyebrow" style="color: rgba(255,255,255,0.5);">Program impact</p>
+      <h2 style="color: white; font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,3vw,2.2rem);">What makes this cohort special</h2>
+    </div>
+    <div class="highlights-grid">
+      <div class="highlight-card">
+        <div class="highlight-icon">🌎</div>
+        <h3>Regional reach</h3>
+        <p>Projects with direct impact across Argentina, Mexico, Chile, and Colombia.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">🤝</div>
+        <h3>Collaborative work</h3>
+        <p>Weekly co-design sessions and cross-review among all fellows.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">📊</div>
+        <h3>Evidence-based</h3>
+        <p>All projects include impact metrics and ongoing evaluation frameworks.</p>
+      </div>
+      <div class="highlight-card">
+        <div class="highlight-icon">🚀</div>
+        <h3>Demo Day in December</h3>
+        <p>Public showcase of results for partners, press, and investors.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" style="max-width: 1100px; margin: 0 auto; padding: 4rem 2rem;">
+  <div class="about-flex">
+    <div class="about-text">
+      <h2>About the Fellowship</h2>
+      <p>
+        Every year our program selects five extraordinary people with projects that combine
+        technical rigor with social impact. Over 12 months, fellows receive personalized
+        mentorship, access to expert networks, and funding to take their ideas from
+        prototype to reality.
+      </p>
+      <p>
+        We believe the solutions to Latin America's greatest challenges are being built
+        today by people like the ones featured on this page. Our job is to give them
+        the support they need to scale.
+      </p>
+      <p>
+        Want to learn more or connect with one of our fellows?
+        <a href="mailto:hello@fellowship.org" style="color: var(--indigo); font-weight: 600;">
+          Get in touch →
+        </a>
+      </p>
+    </div>
+    <div class="about-quote">
+      <blockquote>
+        "This fellowship gave me the network, the resources, and the confidence to
+        turn an idea into something that genuinely changes lives."
+      </blockquote>
+      <cite>— Fellow, 2024 cohort</cite>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Fellowship 2025 · All rights reserved ·
+    <a href="mailto:hello@fellowship.org">hello@fellowship.org</a>
+  </p>
+</footer>
+
 </body>
 </html>
