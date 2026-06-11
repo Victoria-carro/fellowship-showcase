@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fellowship 2025 — Project Highlights</title>
+  <title>AI Debaters — María Victoria Carro · Fellowship 2025</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,13 +14,19 @@
       --navy: #0f1f3d;
       --indigo: #2d4a8a;
       --sky: #4a90d9;
-      --mint: #3cb88a;
       --cream: #f8f6f1;
       --white: #ffffff;
-      --gray-light: #f0eee9;
       --gray-mid: #9a9890;
       --gray-dark: #3a3835;
       --accent: #e8a020;
+      --purple-light: #EEEDFE;
+      --purple-dark: #3C3489;
+      --coral-light: #FAECE7;
+      --coral-dark: #712B13;
+      --teal-light: #E1F5EE;
+      --teal-dark: #085041;
+      --amber-light: #FAEEDA;
+      --amber-dark: #633806;
     }
 
     html { scroll-behavior: smooth; }
@@ -44,263 +51,261 @@
       z-index: 100;
     }
     .nav-brand {
-      color: var(--white);
+      color: white;
       font-weight: 600;
       font-size: 15px;
-      letter-spacing: 0.5px;
       text-decoration: none;
     }
-    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
-    .nav-links a {
-      color: rgba(255,255,255,0.75);
-      text-decoration: none;
+    .nav-back {
+      color: rgba(255,255,255,0.7);
       font-size: 13px;
-      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       transition: color 0.2s;
     }
-    .nav-links a:hover { color: var(--white); }
+    .nav-back:hover { color: white; }
+    .nav-back::before { content: "←"; }
 
     /* HERO */
     .hero {
       background: var(--navy);
-      color: var(--white);
-      padding: 5rem 2rem 4rem;
-      text-align: center;
+      padding: 4rem 2rem 3rem;
     }
-    .hero-label {
+    .hero-inner { max-width: 860px; margin: 0 auto; }
+    .hero-pill {
       display: inline-block;
-      background: rgba(74,144,217,0.25);
-      color: var(--sky);
-      font-size: 12px;
+      background: rgba(74,144,217,0.22);
+      color: #6ab4f5;
+      font-size: 11px;
       font-weight: 600;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      padding: 5px 16px;
+      padding: 4px 14px;
       border-radius: 20px;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
     .hero h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2.2rem, 5vw, 3.6rem);
-      font-weight: 700;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: white;
       line-height: 1.2;
-      max-width: 760px;
-      margin: 0 auto 1.25rem;
+      margin-bottom: 1rem;
     }
     .hero h1 em {
       font-style: normal;
       color: var(--accent);
     }
     .hero-sub {
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.72);
-      max-width: 600px;
-      margin: 0 auto 2.5rem;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
+      max-width: 680px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
     }
-    .hero-stats {
+    .hero-meta {
       display: flex;
-      justify-content: center;
-      gap: 3rem;
+      gap: 2rem;
       flex-wrap: wrap;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      padding-top: 2.5rem;
-      margin-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1.5rem;
     }
-    .stat-item { text-align: center; }
-    .stat-num {
+    .meta-item strong {
       display: block;
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .stat-label {
       font-size: 13px;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 2px;
+    }
+    .meta-item span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+    .paper-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .paper-btn:hover { background: rgba(255,255,255,0.18); }
+
+    /* MAIN CONTENT */
+    .content { max-width: 860px; margin: 0 auto; padding: 3rem 2rem; }
+
+    /* STAT STRIP */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat-n {
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .stat-l {
+      font-size: 12px;
+      color: var(--gray-mid);
+      margin-top: 2px;
     }
 
     /* SECTION */
-    section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
-    .section-header { text-align: center; margin-bottom: 3rem; }
-    .section-eyebrow {
-      font-size: 12px;
+    .section-label {
+      font-size: 11px;
       font-weight: 600;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--indigo);
-      margin-bottom: 0.5rem;
-    }
-    .section-header h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      color: var(--navy);
+      margin-bottom: .75rem;
     }
 
-    /* FELLOW CARDS */
-    .fellows-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
-    .fellow-card {
-      background: var(--white);
-      border-radius: 16px;
-      overflow: hidden;
+    /* INTRO BOX */
+    .intro-box {
+      background: white;
       border: 1px solid rgba(0,0,0,0.07);
-      transition: transform 0.2s, box-shadow 0.2s;
+      border-left: 3px solid var(--indigo);
+      border-radius: 0 12px 12px 0;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--gray-dark);
     }
-    .fellow-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 36px rgba(15,31,61,0.12);
-    }
-    .card-accent-bar {
-      height: 5px;
-      width: 100%;
-    }
-    .card-body { padding: 1.5rem; }
-    .fellow-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 1rem;
-    }
-    .fellow-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-    .fellow-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--navy);
-    }
-    .fellow-role {
-      font-size: 12px;
-      color: var(--gray-mid);
-    }
-    .project-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--indigo);
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .card-body p {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.65;
-      margin-bottom: 1rem;
-    }
-    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
-    .tag {
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.3px;
-    }
-    .card-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      color: var(--indigo);
-      transition: gap 0.2s;
-    }
-    .card-link:hover { gap: 9px; }
-    .card-link::after { content: "→"; }
 
-    /* HIGHLIGHTS SECTION */
-    .highlights-bg { background: var(--navy); }
-    .highlights-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 4rem 2rem;
-    }
-    .highlights-grid {
+    /* FINDINGS */
+    .findings-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
     }
-    .highlight-card {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 12px;
-      padding: 1.5rem;
+    .finding-card {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 1.25rem;
     }
-    .highlight-icon {
-      font-size: 1.8rem;
-      margin-bottom: 0.75rem;
+    .finding-num {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 11px;
+      border-radius: 20px;
+      margin-bottom: .6rem;
     }
-    .highlight-card h3 {
+    .finding-card h3 {
       font-size: 15px;
       font-weight: 600;
-      color: var(--white);
-      margin-bottom: 0.4rem;
-    }
-    .highlight-card p {
-      font-size: 13px;
-      color: rgba(255,255,255,0.6);
-      line-height: 1.6;
-    }
-
-    /* ABOUT SECTION */
-    .about-flex {
-      display: flex;
-      gap: 4rem;
-      align-items: flex-start;
-      flex-wrap: wrap;
-    }
-    .about-text { flex: 1; min-width: 280px; }
-    .about-text h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
       color: var(--navy);
-      margin-bottom: 1rem;
+      margin-bottom: .4rem;
     }
-    .about-text p { color: #555; margin-bottom: 1rem; }
-    .about-quote {
-      flex: 0 0 300px;
-      background: var(--indigo);
-      color: var(--white);
-      padding: 2rem;
-      border-radius: 16px;
+    .finding-card p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.65;
     }
-    .about-quote blockquote {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
-      font-style: italic;
-      line-height: 1.6;
-      margin-bottom: 1rem;
+    .f1 .finding-num { background: var(--purple-light); color: var(--purple-dark); }
+    .f2 .finding-num { background: var(--coral-light); color: var(--coral-dark); }
+    .f3 .finding-num { background: var(--teal-light); color: var(--teal-dark); }
+    .f4 .finding-num { background: var(--amber-light); color: var(--amber-dark); }
+
+    /* CHARTS */
+    .chart-block { margin-bottom: 2.5rem; }
+    .chart-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: .5rem;
     }
-    .about-quote cite {
+    .chart-sub {
       font-size: 12px;
+      color: var(--gray-mid);
+      margin-bottom: .75rem;
+    }
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #666;
+    }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .lsq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    .chart-wrap { position: relative; width: 100%; }
+
+    /* IMPACT */
+    .impact-box {
+      background: var(--navy);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .impact-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: white;
+      margin-bottom: 1rem;
+    }
+    .impact-box p {
+      font-size: 14px;
       color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      margin-bottom: .75rem;
+    }
+    .impact-box p:last-child { margin-bottom: 0; }
+    .impact-box strong { color: var(--accent); font-weight: 600; }
+
+    /* QUOTE */
+    .quote-block {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .quote-block blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--navy);
+      line-height: 1.6;
+      margin-bottom: .75rem;
+    }
+    .quote-block cite {
+      font-size: 12px;
+      color: var(--gray-mid);
       font-style: normal;
     }
 
     /* FOOTER */
     footer {
       background: var(--gray-dark);
-      color: rgba(255,255,255,0.55);
+      color: rgba(255,255,255,0.5);
       text-align: center;
-      padding: 2rem;
+      padding: 1.5rem 2rem;
       font-size: 13px;
     }
     footer a { color: var(--sky); text-decoration: none; }
 
     @media (max-width: 600px) {
-      .nav-links { display: none; }
-      .hero-stats { gap: 1.5rem; }
-      .about-quote { flex: 0 0 100%; }
+      .hero-meta { gap: 1rem; }
     }
   </style>
 </head>
@@ -308,255 +313,222 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-brand" href="#">🎓 Fellowship 2025</a>
-  <ul class="nav-links">
-    <li><a href="#fellows">Fellows</a></li>
-    <li><a href="#highlights">Highlights</a></li>
-    <li><a href="#about">About</a></li>
-  </ul>
+  <a class="nav-brand" href="index.html">🎓 Fellowship 2025</a>
+  <a class="nav-back" href="index.html">Back to fellows</a>
 </nav>
 
 <!-- HERO -->
 <header class="hero">
-  <div class="hero-label">Cohort 2025</div>
-  <h1>Projects that are <em>changing</em> the game</h1>
-  <p class="hero-sub">
-    Meet the 5 fellows of this edition: researchers, innovators, and leaders
-    working on the most pressing challenges of our time.
-  </p>
-  <div class="hero-stats">
-    <div class="stat-item">
-      <span class="stat-num">5</span>
-      <span class="stat-label">Selected fellows</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">12</span>
-      <span class="stat-label">Program months</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">3</span>
-      <span class="stat-label">Countries represented</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-num">5</span>
-      <span class="stat-label">Active projects</span>
+  <div class="hero-inner">
+    <div class="hero-pill">NeurIPS 2025 · AI Safety Research</div>
+    <h1>Do AI models argue better<br>when they <em>believe what they say?</em></h1>
+    <p class="hero-sub">
+      A research project studying whether AI systems are more persuasive when defending
+      positions that align with their own internal beliefs — and what this reveals about
+      keeping AI honest and safe.
+    </p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <strong>María Victoria Carro</strong>
+        <span>FAIR · Universidad de Buenos Aires · Università di Genova</span>
+      </div>
+      <div class="meta-item">
+        <strong>Collaborators</strong>
+        <span>12 researchers across 6 institutions</span>
+      </div>
+      <div class="meta-item">
+        <strong>Published</strong>
+        <span>NeurIPS 2025 Workshop</span>
+      </div>
+      <div style="align-self: center;">
+        <a class="paper-btn" href="https://arxiv.org/abs/2510.13912" target="_blank">📄 Read the paper</a>
+      </div>
     </div>
   </div>
 </header>
 
-<!-- FELLOWS -->
-<section id="fellows">
-  <div class="section-header">
-    <p class="section-eyebrow">The cohort</p>
-    <h2>Meet the Fellows</h2>
+<!-- CONTENT -->
+<main class="content">
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-n">4</div><div class="stat-l">AI models tested</div></div>
+    <div class="stat-card"><div class="stat-n">145</div><div class="stat-l">Moral dilemmas</div></div>
+    <div class="stat-card"><div class="stat-n">300+</div><div class="stat-l">Debates run</div></div>
+    <div class="stat-card"><div class="stat-n">4</div><div class="stat-l">Key findings</div></div>
   </div>
 
-  <div class="fellows-grid">
-
-    <!-- Fellow 1 -->
-    <div class="fellow-card">
-      <div class="card-accent-bar" style="background: #2d4a8a;"></div>
-      <div class="card-body">
-        <div class="fellow-header">
-          <div class="fellow-avatar" style="background:#e8f0fc; color:#2d4a8a;">MG</div>
-          <div>
-            <div class="fellow-name">María García</div>
-            <div class="fellow-role">University of Buenos Aires</div>
-          </div>
-        </div>
-        <div class="project-title">Project</div>
-        <p>
-          Develops machine learning models to detect school dropout patterns
-          in rural Latin American communities, with the goal of intervening early
-          and keeping students in the education system.
-        </p>
-        <div class="card-tags">
-          <span class="tag" style="background:#e8f0fc; color:#2d4a8a;">Education</span>
-          <span class="tag" style="background:#e8f0fc; color:#2d4a8a;">Machine Learning</span>
-          <span class="tag" style="background:#e8f0fc; color:#2d4a8a;">Social Impact</span>
-        </div>
-        <a class="card-link" href="#">View project</a>
-      </div>
-    </div>
-
-    <!-- Fellow 2 -->
-    <div class="fellow-card">
-      <div class="card-accent-bar" style="background: #3cb88a;"></div>
-      <div class="card-body">
-        <div class="fellow-header">
-          <div class="fellow-avatar" style="background:#e2f7f0; color:#1a7a5e;">AR</div>
-          <div>
-            <div class="fellow-name">Andrés Ramírez</div>
-            <div class="fellow-role">ITAM, Mexico City</div>
-          </div>
-        </div>
-        <div class="project-title">Project</div>
-        <p>
-          Designs low-cost IoT sensor-based climate monitoring systems for
-          vulnerable coastal communities, generating early warnings for
-          extreme weather events.
-        </p>
-        <div class="card-tags">
-          <span class="tag" style="background:#e2f7f0; color:#1a7a5e;">Climate</span>
-          <span class="tag" style="background:#e2f7f0; color:#1a7a5e;">IoT</span>
-          <span class="tag" style="background:#e2f7f0; color:#1a7a5e;">Resilience</span>
-        </div>
-        <a class="card-link" href="#">View project</a>
-      </div>
-    </div>
-
-    <!-- Fellow 3 -->
-    <div class="fellow-card">
-      <div class="card-accent-bar" style="background: #e8a020;"></div>
-      <div class="card-body">
-        <div class="fellow-header">
-          <div class="fellow-avatar" style="background:#fdf0d9; color:#a06010;">LS</div>
-          <div>
-            <div class="fellow-name">Laura Suárez</div>
-            <div class="fellow-role">PUC Chile</div>
-          </div>
-        </div>
-        <div class="project-title">Project</div>
-        <p>
-          Builds a telemedicine platform with conversational AI for primary
-          diagnosis in areas without access to specialists, connecting rural
-          patients with the formal healthcare system.
-        </p>
-        <div class="card-tags">
-          <span class="tag" style="background:#fdf0d9; color:#a06010;">Health</span>
-          <span class="tag" style="background:#fdf0d9; color:#a06010;">AI</span>
-          <span class="tag" style="background:#fdf0d9; color:#a06010;">Access</span>
-        </div>
-        <a class="card-link" href="#">View project</a>
-      </div>
-    </div>
-
-    <!-- Fellow 4 -->
-    <div class="fellow-card">
-      <div class="card-accent-bar" style="background: #c0392b;"></div>
-      <div class="card-body">
-        <div class="fellow-header">
-          <div class="fellow-avatar" style="background:#fdecea; color:#922b21;">PT</div>
-          <div>
-            <div class="fellow-name">Pedro Torres</div>
-            <div class="fellow-role">Universidad de los Andes</div>
-          </div>
-        </div>
-        <div class="project-title">Project</div>
-        <p>
-          Investigates transparency and accountability mechanisms in public
-          contracts using data analysis and visualization for journalists and
-          citizens interested in fighting corruption.
-        </p>
-        <div class="card-tags">
-          <span class="tag" style="background:#fdecea; color:#922b21;">Open Government</span>
-          <span class="tag" style="background:#fdecea; color:#922b21;">Data</span>
-          <span class="tag" style="background:#fdecea; color:#922b21;">Transparency</span>
-        </div>
-        <a class="card-link" href="#">View project</a>
-      </div>
-    </div>
-
-    <!-- Fellow 5 -->
-    <div class="fellow-card">
-      <div class="card-accent-bar" style="background: #7d3c98;"></div>
-      <div class="card-body">
-        <div class="fellow-header">
-          <div class="fellow-avatar" style="background:#f5eafb; color:#6c3483;">VM</div>
-          <div>
-            <div class="fellow-name">Valentina Mora</div>
-            <div class="fellow-role">National University</div>
-          </div>
-        </div>
-        <div class="project-title">Project</div>
-        <p>
-          Develops NLP tools for indigenous languages to preserve and digitize
-          the oral cultural heritage of communities at risk of losing their
-          language across future generations.
-        </p>
-        <div class="card-tags">
-          <span class="tag" style="background:#f5eafb; color:#6c3483;">NLP</span>
-          <span class="tag" style="background:#f5eafb; color:#6c3483;">Culture</span>
-          <span class="tag" style="background:#f5eafb; color:#6c3483;">Indigenous Languages</span>
-        </div>
-        <a class="card-link" href="#">View project</a>
-      </div>
-    </div>
-
+  <!-- INTRO -->
+  <div class="section-label">The big question</div>
+  <div class="intro-box">
+    Imagine a lawyer who genuinely believes their client is innocent — are they more convincing than one who privately doubts them? This research asks the same thing about AI: <strong>does believing your own argument make you more persuasive?</strong> And if so, what does that tell us about training AI systems to be honest?
   </div>
-</section>
 
-<!-- HIGHLIGHTS -->
-<div class="highlights-bg" id="highlights">
-  <div class="highlights-inner">
-    <div class="section-header">
-      <p class="section-eyebrow" style="color: rgba(255,255,255,0.5);">Program impact</p>
-      <h2 style="color: white; font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,3vw,2.2rem);">What makes this cohort special</h2>
+  <!-- FINDINGS -->
+  <div class="section-label">Key findings</div>
+  <div class="findings-grid">
+    <div class="finding-card f1">
+      <div class="finding-num">Finding 1</div>
+      <h3>AI plays it safe with judges</h3>
+      <p>When told the judge holds opposing views, models frequently abandon their own position and argue the judge's side instead — a behavior researchers call <em>sycophancy</em>.</p>
     </div>
-    <div class="highlights-grid">
-      <div class="highlight-card">
-        <div class="highlight-icon">🌎</div>
-        <h3>Regional reach</h3>
-        <p>Projects with direct impact across Argentina, Mexico, Chile, and Colombia.</p>
-      </div>
-      <div class="highlight-card">
-        <div class="highlight-icon">🤝</div>
-        <h3>Collaborative work</h3>
-        <p>Weekly co-design sessions and cross-review among all fellows.</p>
-      </div>
-      <div class="highlight-card">
-        <div class="highlight-icon">📊</div>
-        <h3>Evidence-based</h3>
-        <p>All projects include impact metrics and ongoing evaluation frameworks.</p>
-      </div>
-      <div class="highlight-card">
-        <div class="highlight-icon">🚀</div>
-        <h3>Demo Day in December</h3>
-        <p>Public showcase of results for partners, press, and investors.</p>
-      </div>
+    <div class="finding-card f2">
+      <div class="finding-num">Finding 2</div>
+      <h3>Going second is a big advantage</h3>
+      <p>In sequential debates, the model that argues second wins significantly more often — simply because they get the last word and the first debater cannot respond.</p>
+    </div>
+    <div class="finding-card f3">
+      <div class="finding-num">Finding 3</div>
+      <h3>You persuade better when you believe it</h3>
+      <p>Models are consistently more successful at convincing a judge when defending a position that matches their own internal beliefs. Arguing against your beliefs hurts performance.</p>
+    </div>
+    <div class="finding-card f4">
+      <div class="finding-num">Finding 4</div>
+      <h3>The paradox: better writing, less convincing</h3>
+      <p>When AI argues against its beliefs, it produces longer, more elaborate, higher-scored arguments — yet still loses more debates. Like a well-written speech that somehow doesn't land.</p>
     </div>
   </div>
-</div>
 
-<!-- ABOUT -->
-<section id="about" style="max-width: 1100px; margin: 0 auto; padding: 4rem 2rem;">
-  <div class="about-flex">
-    <div class="about-text">
-      <h2>About the Fellowship</h2>
-      <p>
-        Every year our program selects five extraordinary people with projects that combine
-        technical rigor with social impact. Over 12 months, fellows receive personalized
-        mentorship, access to expert networks, and funding to take their ideas from
-        prototype to reality.
-      </p>
-      <p>
-        We believe the solutions to Latin America's greatest challenges are being built
-        today by people like the ones featured on this page. Our job is to give them
-        the support they need to scale.
-      </p>
-      <p>
-        Want to learn more or connect with one of our fellows?
-        <a href="mailto:hello@fellowship.org" style="color: var(--indigo); font-weight: 600;">
-          Get in touch →
-        </a>
-      </p>
+  <!-- CHART 1 -->
+  <div class="chart-block">
+    <div class="chart-title">Which AI model wins the most debates?</div>
+    <div class="chart-sub">Win rate in simultaneous debate — 0.5 means both sides are equally convincing</div>
+    <div class="legend">
+      <span><span class="lsq" style="background:#2d4a8a"></span>Win rate (flip-balanced)</span>
+      <span style="color:#aaa">— dashed line = parity (0.5)</span>
     </div>
-    <div class="about-quote">
-      <blockquote>
-        "This fellowship gave me the network, the resources, and the confidence to
-        turn an idea into something that genuinely changes lives."
-      </blockquote>
-      <cite>— Fellow, 2024 cohort</cite>
+    <div class="chart-wrap" style="height: 240px;">
+      <canvas id="winChart" role="img" aria-label="Bar chart of win rates. GPT-o3: 0.70, Claude Sonnet 4: 0.51, GPT-4o: 0.46, Gemini 2.0 Flash: 0.33.">Win rates: GPT-o3 70%, Claude Sonnet 4 51%, GPT-4o 46%, Gemini 2.0 Flash 33%.</canvas>
     </div>
   </div>
-</section>
+
+  <!-- CHART 2 -->
+  <div class="chart-block">
+    <div class="chart-title">Does believing your argument help you win?</div>
+    <div class="chart-sub">Elo persuasiveness score — higher is better. All models score higher when arguing their own beliefs.</div>
+    <div class="legend">
+      <span><span class="lsq" style="background:#1D9E75"></span>Arguing in line with own beliefs</span>
+      <span><span class="lsq" style="background:#D85A30"></span>Arguing against own beliefs</span>
+    </div>
+    <div class="chart-wrap" style="height: 240px;">
+      <canvas id="eloChart" role="img" aria-label="Grouped bar chart. All four AI models score higher on Elo when arguing positions aligned with their prior beliefs vs misaligned.">All models perform better when arguing positions consistent with their beliefs.</canvas>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-block">
+    <blockquote>
+      "It is harder to lie convincingly than to refute a lie."
+    </blockquote>
+    <cite>— The core premise of AI Debate as a safety technique (Irving et al., 2018). This research finds evidence that supports it.</cite>
+  </div>
+
+  <!-- IMPACT -->
+  <div class="impact-box">
+    <h2>Why does this matter for AI safety?</h2>
+    <p>
+      One of the leading ideas for keeping very powerful AI systems under control is called
+      <strong>AI Debate</strong>: have two AI systems argue opposite sides of a question, then
+      let a human (or a weaker AI) judge decide who's right. The theory is that honest arguments
+      are easier to make and to spot than dishonest ones.
+    </p>
+    <p>
+      This research puts that theory to the test — and broadly confirms it. Models are indeed more
+      persuasive when they argue what they actually "believe." That's good news: it suggests debate
+      can help surface honest answers even when the judge isn't an expert.
+    </p>
+    <p>
+      But there's a critical catch: AI models tend to be <strong>sycophantic</strong> — they often
+      switch to the judge's side to seem agreeable, rather than sticking to what they think is true.
+      Understanding this dynamic is essential before using AI debate as a training tool. If models
+      learn to always please the judge, we could accidentally teach AI to be <em>more</em> deceptive,
+      not less. This research helps identify where those risks lie.
+    </p>
+  </div>
+
+</main>
 
 <!-- FOOTER -->
 <footer>
-  <p>Fellowship 2025 · All rights reserved ·
-    <a href="mailto:hello@fellowship.org">hello@fellowship.org</a>
-  </p>
+  <p>Fellowship 2025 · <a href="index.html">← Back to all fellows</a> · <a href="mailto:hello@fellowship.org">hello@fellowship.org</a></p>
 </footer>
+
+<!-- CHARTS SCRIPT -->
+<script>
+  const winCtx = document.getElementById('winChart');
+  new Chart(winCtx, {
+    type: 'bar',
+    data: {
+      labels: ['GPT-o3', 'Claude Sonnet 4', 'GPT-4o', 'Gemini 2.0 Flash'],
+      datasets: [{
+        label: 'Win rate',
+        data: [0.70, 0.51, 0.46, 0.33],
+        backgroundColor: ['#185FA5', '#2d4a8a', '#2d4a8a', '#2d4a8a'],
+        borderRadius: 5,
+        barThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        annotation: {}
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 12 }, color: '#888' }
+        },
+        y: {
+          min: 0, max: 0.85,
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          ticks: { font: { size: 11 }, color: '#888', callback: v => v.toFixed(2) }
+        }
+      }
+    }
+  });
+
+  const eloCtx = document.getElementById('eloChart');
+  new Chart(eloCtx, {
+    type: 'bar',
+    data: {
+      labels: ['GPT-o3', 'Claude Sonnet 4', 'GPT-4o', 'Gemini 2.0 Flash'],
+      datasets: [
+        {
+          label: 'Aligned with beliefs',
+          data: [230, 180, 60, 20],
+          backgroundColor: '#1D9E75',
+          borderRadius: 5,
+          barThickness: 24
+        },
+        {
+          label: 'Against beliefs',
+          data: [50, -120, -180, -20],
+          backgroundColor: '#D85A30',
+          borderRadius: 5,
+          barThickness: 24
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 12 }, color: '#888' }
+        },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.06)' },
+          ticks: { font: { size: 11 }, color: '#888' }
+        }
+      }
+    }
+  });
+</script>
 
 </body>
 </html>
+
